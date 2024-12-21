@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.Pane?>
+<Pane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:id="mainPane"
+    fx:controller="yuriymagus.elevators_management_lab.MainController">
+
+    <ImageView>
+        <Image url="background_for_elevators.png"/>
+        <!-- Intellij IDEA marks as error, but only
+        with this path program can be launched.
+        Changing to Intellij suggestion will case exception
+        in Application start method. -->
+    </ImageView>
+
+    <ImageView fx:id="firstElevator">
+        <Image
+           url="elevator.png"
+        />
+    </ImageView>
+
+    <ImageView fx:id="secondElevator">
+        <Image
+            url="elevator.png"
+        />
+    </ImageView>
+
+</Pane>
