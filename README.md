@@ -1,26 +1,26 @@
 # Multithreaded Elevator Management System
 
-### 1. Overview
+## 1. Overview
 The system simulates the operation of elevators within a building. It includes a graphical interface (JavaFX) and a backend that handles multiple threads and logic for managing elevator movement, passenger requests, and floor-specific operations.
 
 ---
 
-### 2. Classes and Responsibilities
+## 2. Classes and Responsibilities
 
-#### 2.1 **JavaFX Classes**
+### 2.1 **JavaFX Classes**
 
-##### **ElevatorsApplication**
+#### **ElevatorsApplication**
 - **Purpose**: Entry point of the application. Initializes navigation and displays the initial view.
 - **Key Methods**:
     - `start(Stage stage)`: Loads the initial "hello-view.fxml".
     - `getNavigation()`: Provides access to the `Navigation` object.
 
-##### **GreetingController**
+#### **GreetingController**
 - **Purpose**: Handles user interactions on the greeting screen.
 - **Key Methods**:
     - `onHelloButtonClick()`: Navigates to the main view (`main-view.fxml`).
 
-##### **MainController**
+#### **MainController**
 - **Purpose**: Manages the main application screen, including the simulation of elevators and passenger animations.
 - **Attributes**:
     - `mainPane`: The root pane containing UI elements.
@@ -37,9 +37,9 @@ The system simulates the operation of elevators within a building. It includes a
 
 ---
 
-#### 2.2 **Backend Classes**
+### 2.2 **Backend Classes**
 
-##### **Arbitrator**
+#### **Arbitrator**
 - **Purpose**: Central decision-maker for assigning requests to elevators.
 - **Attributes**:
     - `floors`: List of all floors and their states.
@@ -51,7 +51,7 @@ The system simulates the operation of elevators within a building. It includes a
     - `notifyElevatorFreed()`: Signals when an elevator becomes available.
     - `processQueue()`: Processes queued requests.
 
-##### **Elevator**
+#### **Elevator**
 - **Purpose**: Represents an individual elevator.
 - **Attributes**:
     - `currentFloor`, `direction`: Current state of the elevator.
@@ -63,18 +63,18 @@ The system simulates the operation of elevators within a building. It includes a
     - `pickupPassengers()`: Handles passenger pickups.
     - `moveElevator()`: Moves the elevator to its next position.
 
-##### **RequestsGenerator**
+#### **RequestsGenerator**
 - **Purpose**: Randomly generates passenger requests.
 - **Key Methods**:
     - `generateRequests()`: Continuously generates requests with random start and end floors.
 
-##### **Request**
+#### **Request**
 - **Purpose**: Represents a passenger’s request.
 - **Attributes**:
     - `startFloor`, `endFloor`: Passenger’s origin and destination.
     - `x`, `y`: Graphical coordinates for animation.
 
-##### **Floor**
+#### **Floor**
 - **Purpose**: Represents a floor in the building.
 - **Attributes**:
     - `waitingPassengers`: Queue of passengers waiting for the elevator.
@@ -82,7 +82,7 @@ The system simulates the operation of elevators within a building. It includes a
     - `addWaitingPassenger(Request request)`: Adds a passenger to the queue.
     - `removeWaitingPassenger(Request request)`: Removes a passenger from the queue.
 
-##### **BuildingProperties**
+#### **BuildingProperties**
 - **Purpose**: Stores static properties of the building.
 - **Attributes**:
     - `NUMBER_OF_FLOORS`, `NUMBER_OF_ELEVATORS`: Configurable constants.
@@ -91,13 +91,13 @@ The system simulates the operation of elevators within a building. It includes a
     - `getFloorYCoordinate(int floor)`: Returns the Y-coordinate for a floor.
     - `getElevatorShaftXCoordinate(int elevatorNumber)`: Returns the X-coordinate of an elevator shaft.
 
-##### **Direction (Enum)**
+#### **Direction (Enum)**
 - **Purpose**: Represents elevator direction.
 - **Values**: `UP`, `DOWN`, `STANDING`.
 
 ---
 
-### 3. System Workflow
+## 3. System Workflow
 1. **Initialization**:
     - `ElevatorsApplication` starts the JavaFX application and loads the greeting view.
     - Upon user interaction, `GreetingController` switches to the main view.
@@ -116,19 +116,7 @@ The system simulates the operation of elevators within a building. It includes a
 
 ---
 
-### 4. Key Features
+## 4. Key Features
 - **Real-Time Simulation**: The graphical interface dynamically updates elevator and passenger movements.
 - **Multithreaded Backend**: Elevators and request processing operate in parallel for realistic simulation.
 - **Extensible Architecture**: Easy to add more elevators, floors, or features by modifying constants and extending classes.
-
----
-
-### 5. Future Improvements
-- Add priority handling for certain requests (e.g., emergency stops).
-- Implement detailed logging for debugging and analysis.
-- Expand UI for monitoring all elevator and floor states simultaneously.
-
----
-
-This documentation should serve as a comprehensive guide to understanding the system's design and functionality.
-
