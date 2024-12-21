@@ -159,12 +159,11 @@ public class Elevator implements Runnable {
             this.elevatorThread.interrupt();
             throw new InterruptedException("Elevator has flown out of the building, interrupting its thread.");
         }
-        System.out.println("Elevator " + this + " does his work on coordinates " + xCoordinate + ";" + yCoordinate);
-        System.out.println("Elevator " + this + " floors to visit are " + floorsToVisit + ", having passengers " + getPassengersInsideNumber() + " who needs to " + requestsEndPoints);
+//        System.out.println("Elevator " + this + " does his work on coordinates " + xCoordinate + ";" + yCoordinate);
+//        System.out.println("Elevator " + this + " floors to visit are " + floorsToVisit + ", having passengers " + getPassengersInsideNumber() + " who needs to " + requestsEndPoints);
 
         int exactFloor = BuildingProperties.getExactFloorFromCoordinates(yCoordinate);
-        // exactFloor can be -1 if elevator is behind the floors
-        if (exactFloor != -1) {
+        if (exactFloor != -1) { // exactFloor can be -1 if elevator is behind the floors
             System.out.println("Elevator " + this + " is now on floor " + exactFloor);
             currentFloor = exactFloor;
             releasePassengers();

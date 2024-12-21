@@ -102,7 +102,6 @@ public class MainController {
             if (passengerView == null) {
                 System.err.println("Error in MainController: passenger with id " + passenger.getId() + " not found.");
             } else {
-                System.out.println("Set passenger " + passengerView.getId() + " coordinates from " + passengerView.getX() + ";" + passengerView.getY() + " to " + xCoordinate + ";" + yCoordinate);
                 passengerView.setLayoutX(xCoordinate);
                 passengerView.setLayoutY(yCoordinate);
             }

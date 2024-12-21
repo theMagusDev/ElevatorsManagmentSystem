@@ -1,13 +1,57 @@
-# Multithreaded Elevator Management System
+# Многопоточная система управления лифтами
 
-## 1. Overview
-The system simulates the operation of elevators within a building. It includes a graphical interface (JavaFX) and a backend that handles multiple threads and logic for managing elevator movement, passenger requests, and floor-specific operations.
+## 1. Обзор
+Система имитирует работу лифтов в здании. Она включает в себя графический интерфейс (JavaFX) и бэкэнд, который обрабатывает множество потоков и логику для управления движением лифта, запросами пассажиров и операциями на конкретном этаже.
 
 ---
 
-## 2. Classes and Responsibilities
+## 2. Ключевые особенности
+- **Симуляция в реальном времени**: Графический интерфейс динамически обновляет движение лифта и пассажиров.
+- **Многопоточный бэкэнд**: Лифты и обработка запросов работают параллельно для реалистичного моделирования.
+- **Расширяемая архитектура**: Можно легко добавлять новые лифты, этажи или функции, изменяя константы и расширяя классы.
 
-### 2.1 **JavaFX Classes**
+---
+
+## 3. Логика обработки запросов
++ Когда арбитр получает запрос, он выбирает ближайший лифт (с учетом направления движения лифта).
++ Лифты могут собирать пассажиров по пути следования.
++ Лифт может не принять пассажира, если ему нужно ехать в противоположном направлении. Он примет его позже, или другой лифт заберет этого пассажира.
+
+---
+
+## 4. Классы и их функционал
+
+### 4.1 **Классы JavaFX**
+
+#### **ElevatorsApplication**
+- **Назначение**: Точка входа в приложение. Инициализирует навигацию и отображает начальный вид.
+- **Ключевые методы**:
+  - `start(Stage stage)`: Загружает начальный файл «hello-view.fxml».
+  - `getNavigation()`: Предоставляет доступ к объекту `Navigation`.
+
+#### **GreetingController**.
+- **Назначение**: Обрабатывает взаимодействие пользователя с экраном приветствия.
+- **Ключевые методы**:
+  - `onHelloButtonClick()`: Переход к главному представлению (`main-view.fxml`).
+
+#### **MainController**.
+- **Назначение**: Управляет главным экраном приложения, включая симуляцию лифтов и анимацию пассажиров.
+- **Атрибуты**:
+  - `mainPane`: Корневая панель, содержащая элементы пользовательского интерфейса.
+  - `Первый лифт`, `Второй лифт`: Графические представления лифтов.
+  - `requests`: Набор иконок пассажиров.
+  - `arbitrator`: Управляет решениями и логикой работы лифта.
+- **Ключевые методы**:
+  - `initialize()`: Устанавливает начальные позиции лифтов и запускает симуляцию.
+  - `addPassenger(Request request)`: Добавляет графическое представление пассажира.
+  - `setPassengerVisible(Request passenger, boolean toVisible)`: Управляет видимостью пассажира.
+  - `movePassengerTo(Request passenger, double x, double y)`: Перемещает пассажира в указанные координаты.
+  - `updateElevatorPosition(int elevatorIndex, int yCoordinate)`: Обновляет положение лифта на экране.
+    - `startElevatorSimulation()`: Инициализирует логику бэкэнда.
+
+## 4. Classes and Responsibilities
+
+### 4.1 **JavaFX Classes**
 
 #### **ElevatorsApplication**
 - **Purpose**: Entry point of the application. Initializes navigation and displays the initial view.
@@ -37,86 +81,79 @@ The system simulates the operation of elevators within a building. It includes a
 
 ---
 
-### 2.2 **Backend Classes**
+### 4.2 **Бэкэнд-классы**.
 
-#### **Arbitrator**
-- **Purpose**: Central decision-maker for assigning requests to elevators.
-- **Attributes**:
-    - `floors`: List of all floors and their states.
-    - `elevators`: List of managed elevators.
-    - `waitingRequests`: Queue of unprocessed requests.
-- **Key Methods**:
-    - `chooseClosestElevator(Request request)`: Determines the optimal elevator for a request.
-    - `addRequest(Request request)`: Assigns requests to elevators or adds them to the queue.
-    - `notifyElevatorFreed()`: Signals when an elevator becomes available.
-    - `processQueue()`: Processes queued requests.
+#### **Арбитр**
+- **Назначение**: Центральное лицо, принимающее решения о распределении заявок на лифты.
+- **Атрибуты**:
+  - `floors`: Список всех этажей и их состояния.
+  - `elevators`: Список управляемых лифтов.
+  - `waitingRequests`: Очередь необработанных запросов.
+- **Ключевые методы**:
+  - `chooseClosestElevator(Request request)`: Определяет оптимальный лифт для запроса.
+  - `addRequest(Request request)`: Назначает заявки лифтам или добавляет их в очередь.
+  - `notifyElevatorFreed()`: Сигнализирует, когда лифт становится свободным.
+  - `processQueue()`: Обрабатывает поставленные в очередь запросы.
 
-#### **Elevator**
-- **Purpose**: Represents an individual elevator.
-- **Attributes**:
-    - `currentFloor`, `direction`: Current state of the elevator.
-    - `floorsToVisit`: Floors the elevator will visit.
-    - `requestsEndPoints`: Map of passengers and their destinations.
-- **Key Methods**:
-    - `addFloorsToVisit(Integer floor)`: Adds a floor to the elevator’s queue.
-    - `releasePassengers()`: Handles passenger drop-offs.
-    - `pickupPassengers()`: Handles passenger pickups.
-    - `moveElevator()`: Moves the elevator to its next position.
+#### **Лифт**.
+- **Назначение**: Представляет отдельный лифт.
+- **Атрибуты**:
+  - `currentFloor`, `direction`: Текущее состояние лифта.
+  - `floorsToVisit`: Этажи, которые посетит лифт.
+  - `requestsEndPoints`: Карта пассажиров и мест их назначения.
+- **Ключевые методы**:
+  - `addFloorsToVisit(Integer floor)`: Добавляет этаж в очередь лифта.
+  - `releasePassengers()`: Обрабатывает высадку пассажиров.
+  - `pickupPassengers()`: Занимается подбором пассажиров.
+  - `moveElevator()`: Перемещает лифт в следующую позицию.
 
-#### **RequestsGenerator**
-- **Purpose**: Randomly generates passenger requests.
-- **Key Methods**:
-    - `generateRequests()`: Continuously generates requests with random start and end floors.
+#### **RequestsGenerator**.
+- **Назначение**: Случайным образом генерирует запросы пассажиров.
+- **Ключевые методы**:
+  - `generateRequests()`: Непрерывно генерирует запросы со случайными начальным и конечным этажами.
 
 #### **Request**
-- **Purpose**: Represents a passenger’s request.
-- **Attributes**:
-    - `startFloor`, `endFloor`: Passenger’s origin and destination.
-    - `x`, `y`: Graphical coordinates for animation.
+- **Назначение**: Представляет запрос пассажира.
+- **Атрибуты**:
+  - `startFloor`, `endFloor`: Место отправления и назначения пассажира.
+  - `x`, `y`: Графические координаты для анимации.
 
-#### **Floor**
-- **Purpose**: Represents a floor in the building.
-- **Attributes**:
-    - `waitingPassengers`: Queue of passengers waiting for the elevator.
-- **Key Methods**:
-    - `addWaitingPassenger(Request request)`: Adds a passenger to the queue.
-    - `removeWaitingPassenger(Request request)`: Removes a passenger from the queue.
+#### **Пол**
+- **Назначение**: Представляет этаж в здании.
+- **Атрибуты**:
+  - `waitingPassengers`: Очередь пассажиров, ожидающих лифт.
+- **Ключевые методы**:
+  - `addWaitingPassenger(Request request)`: Добавляет пассажира в очередь.
+  - `removeWaitingPassenger(Request request)`: Удаляет пассажира из очереди.
 
-#### **BuildingProperties**
-- **Purpose**: Stores static properties of the building.
-- **Attributes**:
-    - `NUMBER_OF_FLOORS`, `NUMBER_OF_ELEVATORS`: Configurable constants.
-    - Coordinate mappings for floors and elevator shafts.
-- **Key Methods**:
-    - `getFloorYCoordinate(int floor)`: Returns the Y-coordinate for a floor.
-    - `getElevatorShaftXCoordinate(int elevatorNumber)`: Returns the X-coordinate of an elevator shaft.
+#### **BuildingProperties**.
+- **Назначение**: Хранит статические свойства здания.
+- **Атрибуты**:
+  - `КОЛИЧЕСТВО_ЭТАЖЕЙ`, `КОЛИЧЕСТВО_ЛИФТОВ`: Настраиваемые константы.
+  - Координатные отображения для этажей и лифтовых шахт.
+- **Ключевые методы**:
+  - `getFloorYCoordinate(int floor)`: Возвращает координату Y для этажа.
+  - `getElevatorShaftXCoordinate(int elevatorNumber)`: Возвращает X-координату шахты лифта.
 
-#### **Direction (Enum)**
-- **Purpose**: Represents elevator direction.
-- **Values**: `UP`, `DOWN`, `STANDING`.
-
----
-
-## 3. System Workflow
-1. **Initialization**:
-    - `ElevatorsApplication` starts the JavaFX application and loads the greeting view.
-    - Upon user interaction, `GreetingController` switches to the main view.
-    - `MainController` initializes elevator positions and starts the simulation.
-
-2. **Request Generation**:
-    - `RequestsGenerator` continuously generates passenger requests.
-    - Requests are processed by the `Arbitrator`, which assigns them to elevators or queues them.
-
-3. **Elevator Operations**:
-    - Elevators, managed by the `Elevator` class, move between floors to pick up and drop off passengers.
-    - Elevator positions and passenger movements are updated in real-time on the UI via `MainController`.
-
-4. **Dynamic Updates**:
-    - Elevator and passenger states are updated through JavaFX methods (`Platform.runLater` ensures thread safety).
+#### **Direction (Enum)**.
+- **Назначение**: Представляет направление движения лифта.
+- **Значения**: `ВВЕРХ`, `ВНИЗ`, `СТОЯТЬ`.
 
 ---
 
-## 4. Key Features
-- **Real-Time Simulation**: The graphical interface dynamically updates elevator and passenger movements.
-- **Multithreaded Backend**: Elevators and request processing operate in parallel for realistic simulation.
-- **Extensible Architecture**: Easy to add more elevators, floors, or features by modifying constants and extending classes.
+## 5. Рабочий процесс системы
+1. **Инициализация**:
+  - `ElevatorsApplication` запускает JavaFX-приложение и загружает представление приветствия.
+  - При взаимодействии с пользователем `GreetingController` переключается на основной вид.
+  - `MainController` инициализирует позиции лифтов и запускает симуляцию.
+
+2. **Генерация запросов**:
+  - `RequestsGenerator` постоянно генерирует запросы пассажиров.
+  - Запросы обрабатываются `Arbitrator`, который распределяет их по лифтам или ставит в очередь.
+
+3. **Эксплуатация лифтов**:
+  - Лифты, управляемые классом `Elevator`, перемещаются между этажами, забирая и высаживая пассажиров.
+  - Позиции лифтов и перемещения пассажиров обновляются в реальном времени в пользовательском интерфейсе через `MainController`.
+
+4. **Динамические обновления**:
+  - Состояния лифта и пассажиров обновляются с помощью методов JavaFX (`Platform.runLater` обеспечивает безопасность потоков).
